@@ -26,14 +26,14 @@ pygame.display.update()
 
 async def textt(text):
     pygame.draw.rect(showw, (255, 255, 255), (0, 0, 1000, 70))
-    basicFont = pygame.font.SysFont("Arial", 40)
+    basicFont = pygame.font.Font("PingFang.ttf", 40)
     textt = basicFont.render(text, 1, (0, 255, 0))
     showw.blit(textt, (10, 10))
     pygame.display.update()
 
 # pg end
 
-loop.run_until_complete(textt("start"))
+loop.run_until_complete(textt("正常"))
 
 board_url = "https://segonoj.site/paintboard/board"
 
