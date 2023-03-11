@@ -31,9 +31,9 @@ async def textt(text):
     showw.blit(textt, (10, 10))
     pygame.display.update()
 
+loop.run_until_complete(textt("正常"))
 # pg end
 
-loop.run_until_complete(textt("正常"))
 
 board_url = "https://segonoj.site/paintboard/board"
 
@@ -101,6 +101,8 @@ async def matchImg(imgsrc, imgobj, confidencevalue=0.5):  # imgsrc=原始图像�
                 for k in range(findd[0][1], findd[3][1]):
                     image.putpixel((j, findd[0][1]), (255, 0, 0))
                     image.putpixel((j, findd[3][1]), (255, 0, 0))
+                    pygame.draw.rect(showw,(255, 0, 0), (j+70, findd[3][1], 1, 1))
+                    pygame.draw.rect(showw,(255, 0, 0), (j+70, findd[0][1], 1, 1))
 
             for j in range(findd[0][1], findd[3][1]):
                 image.putpixel((findd[0][0], j), (255, 0, 0))
@@ -123,7 +125,9 @@ async def wmatchImg():
 
 # loop.run_until_complete(wmatchImg())
 
+# pg start
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+# pg end
