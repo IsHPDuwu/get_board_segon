@@ -22,15 +22,20 @@ pygame.display.update()
 
 """文字"""
 
-
-async def textt(text):
+basicFont = pygame.font.Font("PingFang.ttf", 40)
+async def textt1(text):
     pygame.draw.rect(showw, (255, 255, 255), (0, 0, 1000, 70))
-    basicFont = pygame.font.Font("PingFang.ttf", 40)
-    textt = basicFont.render(text, 1, (0, 255, 0))
-    showw.blit(textt, (10, 10))
+    text = basicFont.render(text, 1, (0, 255, 0))
+    showw.blit(text, (10, 10))
     pygame.display.update()
 
-loop.run_until_complete(textt("正常"))
+async def textt2(text):
+    pygame.draw.rect(showw, (255, 255, 255), (0, 700, 1000, 70))
+    text = basicFont.render(text, 1, (0, 255, 0))
+    showw.blit(text, (10, 710))
+    pygame.display.update()
+
+loop.run_until_complete(textt1("正常"))
 # pg end
 
 
@@ -43,6 +48,7 @@ lastret = ""
 async def get_board_segon():
     # if(1):
     try:
+        cnt=0
         async with aiohttp.ClientSession() as session:
             async with session.get(board_url) as resp:
                 ret = await resp.text()
@@ -53,26 +59,30 @@ async def get_board_segon():
                 for y in range(0, 999):
                     for x in range(0, 599):
                         now = ret[y][x*6:x*6+6]
-                        pygame.draw.rect(showw, (int(now[0:2], 16), int(
-                            now[2:4], 16), int(now[4:6], 16)), (y+70, x, 1, 1))
+                        if(showw.get_at((y, x))!=(int(now[0:2], 16), int(
+                            now[2:4], 16), int(now[4:6], 16))):
+                                pygame.draw.rect(showw, (int(now[0:2], 16), int(
+                                    now[2:4], 16), int(now[4:6], 16)), (y+70, x, 1, 1))
+                        else:
+                            cnt+=1
                 # image.show()
-                return 2
+                textt2(str(cnt/0.2)+"px/s")
+                return cnt/0.2
     except Exception as e:
         print("Error at get_board_segon()\n> "+str(e))
-        await textt(str(e))
-        return 1
+        await textt1(str(e))
+        return -1
 
 
 async def save_board_segon():
     try:
-
         pygame.image.save(showw,'0.png')
     except Exception as e:
         print("Error at save_board_segon()\n> ", str(e))
-        await textt(str(e))
+        await textt1(str(e))
 
 
-loop.run_until_complete(get_board_segon())
+
 
 
 async def matchImg(imgsrc, imgobj, confidencevalue=0.5):  # imgsrc=原始图像，imgobj=待查找的图片
@@ -95,7 +105,7 @@ async def matchImg(imgsrc, imgobj, confidencevalue=0.5):  # imgsrc=原始图像�
                 pygame.draw.rect(showw,(255, 0, 0), (findd[2][0], j+70, 1, 1))
     except Exception as e:
         print("Error at matchImg()\n> "+str(e))
-        await textt(str(e))
+        await textt1(str(e))
 
 imagepath = ["1.png"]
 
@@ -109,6 +119,8 @@ async def wmatchImg():
 
 # pg start
 while 1:
+    loop.run_until_complete(get_board_segon())
+    time.sleep(0.2)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
