@@ -9,7 +9,7 @@ import aircv as ac
 board_url = "https://segonoj.site/paintboard/board"
 loop = asyncio.get_event_loop()
 
-
+lastret = ""
 async def get_board_segon():
     #if(1):
     try:
@@ -17,30 +17,38 @@ async def get_board_segon():
         async with aiohttp.ClientSession() as session:
             async with session.get(board_url) as resp:
                 ret = await resp.text()
+                if(ret==lastret):
+                    return 0
+                lastret = ret
                 ret = ret.split('\n')
                 for y in range(0, 999):
                     for x in range(0, 599):
                         now = ret[y][x*6:x*6+6]
                         image.putpixel((y, x), (int(now[0:2], 16), int(
                             now[2:4], 16), int(now[4:6], 16)))
-                image.show()
+                #image.show()
                 return image
-    except:
-        print("Error at get_board_segon()")
-        return None
+    except Exception as e:
+        print("Error at get_board_segon()\n> "+str(e))
+        return 1
 
 
 async def save_board_segon():
     try:
         ret = await get_board_segon()
+        if(ret==0):
+            print("Same as last time")
+            return 
+        if(ret==1):
+            return    
         ret.save(time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) +
                  str(time.time() % 1)[1:]+".png")
         ret.save("0.png")
-    except:
-        print("Error at save_board_segon()")
+    except Exception as e:
+        print("Error at save_board_segon()",str(e))
 
 
-#ret = loop.run_until_complete(save_board_segon())
+loop.run_until_complete(save_board_segon())
 
 
 async def matchImg(imgsrc, imgobj, confidencevalue=0.5):  # imgsrc=原始图像，imgobj=待查找的图片
@@ -62,12 +70,12 @@ async def matchImg(imgsrc, imgobj, confidencevalue=0.5):  # imgsrc=原始图像�
             for j in range(findd[0][1], findd[3][1]):
                 image.putpixel((findd[0][0], j), (255, 0, 0))
                 image.putpixel((findd[2][0], j), (255, 0, 0))
-        image.show()
+        #image.show()
         # image.save("2.png")
         image.save("0.png")
         return image
     except:
-        print("Error at matchImg())")
+        print("Error at matchImg()")
 
 imagepath = ["1.png"]
 
