@@ -45,7 +45,7 @@ async def save_board_segon():
                  str(time.time() % 1)[1:]+".png")
         ret.save("0.png")
     except Exception as e:
-        print("Error at save_board_segon()",str(e))
+        print("Error at save_board_segon()\n> ",str(e))
 
 
 loop.run_until_complete(save_board_segon())
@@ -74,8 +74,8 @@ async def matchImg(imgsrc, imgobj, confidencevalue=0.5):  # imgsrc=原始图像�
         # image.save("2.png")
         image.save("0.png")
         return image
-    except:
-        print("Error at matchImg()")
+    except Exception as e:
+        print("Error at matchImg()\n> "+str(e))
 
 imagepath = ["1.png"]
 
